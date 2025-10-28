@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>City Night Racing - Powered by Suleiman Alhassan</title>
+  <style>
+    * {margin:0; padding:0; box-sizing:border-box;}
+    html, body {width:100%; height:100%; overflow:hidden; background:black;}
+    canvas {display:block;}
+
+    /* Touch Buttons */
+    .controls {
+      position: absolute;
+      bottom: 20px;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 10;
+    }
+    .btn {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      border: 2px solid #00ffff;
+      color: white;
+      font-size: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      user-select: none;
+      transition: 0.2s;
+    }
+    .btn:active {
+      background: rgba(0,255,255,0.4);
+      transform: scale(1.1);
+      box-shadow: 0 0 20px #0ff;
+    }
+  </style>
+</head>
+<body>
+  <div class="controls">
+    <div id="left" class="btn">⬅️</div>
+    <div id="up" class="btn">⬆️</div>
+    <div id="right" class="btn">➡️</div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/examples/js/loaders/GLTFLoader.js"></script>
+
+  <script>
+  // === Scene and Camera ===
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 2000);
+  const renderer = new THREE.WebGLRenderer({antialias:true});
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  document.body.appendChild(renderer.domElement);
+
+  // === Lighting ===
+  const ambient = new THREE.AmbientLight(0xffffff, 0.5);
+  scene.add(ambient);
+  const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+  dirLight.position.set(0, 10, 10);
+  scene.add(dirLight);
+
+  // === Road ===
+  const roadGeometry = new THREE.PlaneGeometry(10, 500, 32, 32);
+  const roadMaterial = new THREE.MeshStandardMaterial({color: 0x222222});
+  const road = new THREE.Mesh(roadGeometry, roadMaterial);
+  road.rotation.x = -Math.PI / 2;
+  scene.add(road);
+
+  // === Red Car Model ===
+  const loader = new THREE.GLTFLoader();
+  let car;
+  loader.load("https://threejs.org/examples/models/gltf/Ferrari.glb", gltf => {
+      car = gltf.scene;
+      car.scale.set(0.02,0.02,0.02);
+      car.position.set(0, 0.05, 3);
+      scene.add(car);
+  });
+
+  // === Camera Setup ===
+  camera.position.set(0, 2, 8);
+  camera.lookAt(0, 0, 0);
+
+  // === Stars ===
+  const stars = new THREE.Group();
+  for (let i = 0; i < 200; i++) {
+    const starGeo = new THREE.SphereGeometry(0.05, 8, 8);
+    const starMat = new THREE.MeshBasicMaterial({color: 0xffffff});
+    const star = new THREE.Mesh(starGeo, starMat);
+    star.position.set((Math.random() - 0.5) * 300, Math.random() * 100 + 20, (Math.random() - 0.5) * 300);
+    stars.add(star);
+  }
+  scene.add(stars);
+
+  // === Controls ===
+  let moveLeft=false, moveRight=false, accelerating=false;
+  let speed = 0.2, roadOffset = 0;
+
+  document.getElementById("left").addEventListener("touchstart",()=>moveLeft=true);
+  document.getElementById("left").addEventListener("touchend",()=>moveLeft=false);
+  document.getElementById("right").addEventListener("touchstart",()=>moveRight=true);
+  document.getElementById("right").addEventListener("touchend",()=>moveRight=false);
+  document.getElementById("up").addEventListener("touchstart",()=>accelerating=true);
+  document.getElementById("up").addEventListener("touchend",()=>accelerating=false);
+
+  // === Sounds ===
+  const music = new Audio("https://cdn.pixabay.com/download/audio/2022/03/28/audio_1d894c7e3b.mp3?filename=night-drive-ambient-111979.mp3");
+  music.loop = true;
+  music.volume = 0.3;
+  music.play();
+
+  const engine = new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_6fbd5a0c8f.mp3?filename=car-engine-101147.mp3");
+  engine.loop = true;
+  engine.volume = 0.2;
+  engine.play();
