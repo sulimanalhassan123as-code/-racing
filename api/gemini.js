@@ -1,18 +1,28 @@
 // /api/gemini.js
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import fetch from "node-fetch";
 
 export default async function handler(req, res) {
-  if (req.method !== "POST") return res.status(405).send("Method not allowed");
   try {
     const { message } = req.body;
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-pro" });
+    const response = await fetch(
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-pro-latest:generateContent?key=" +
+        process.env.GEMINI_API_KEY,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ role: "user", parts: [{ text: message }] }],
+        }),
+      }
+    );
 
-    const result = await model.generateContent(message);
-    const reply = result.response.text();
+    const data = await response.json();
+    const reply =
+      data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+      "Sorry, I couldn’t get a reply.";
+
     res.status(200).json({ reply });
   } catch (error) {
-    console.error("Gemini API Error:", error);
-    res.status(500).json({ reply: "Suleiman AI encountered an error. Try again later." });
+    res.status(500).json({ reply: "Network error. Please try again." });
   }
 }
