@@ -12,9 +12,9 @@ export default async function handler(req, res) {
         Authorization: `Bearer ${process.env.VEO3_API_KEY}`,
       },
       body: JSON.stringify({
-        prompt: prompt,
-        resolution: "720p",
+        prompt,
         duration: 5,
+        resolution: "720p",
       }),
     });
 
