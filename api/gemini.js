@@ -20,3 +20,8 @@ export default async function handler(req, res) {
     res.status(500).json({ reply: "Error connecting to Gemini API." });
   }
       }
+{
+  "contents": [{ "parts": [{ "text": message }] }],
+  "safetySettings": [{ "category": "HARM_CATEGORY_DEROGATORY", "threshold": "BLOCK_NONE" }],
+  "maxOutputTokens": 2048
+               }
