@@ -1,179 +1,113 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
-}
-
 body {
-  background: #0d1117;
-  color: #e6edf3;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 100vh;
+  font-family: "Poppins", sans-serif;
+  background: #f5f6fa;
+  margin: 0;
+  text-align: center;
+  color: #333;
 }
 
 header {
-  text-align: center;
   padding: 20px;
-  font-size: 1.6rem;
-  color: #58a6ff;
+  background: #0078ff;
+  color: white;
+  border-radius: 0 0 20px 20px;
 }
 
-.tab-buttons {
+.center-box {
+  margin-top: 60px;
   display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 15px;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
 }
 
-.tab-buttons button {
-  padding: 10px 25px;
-  border: none;
-  background: #161b22;
-  color: #c9d1d9;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1rem;
+.main-btn {
+  background: #0078ff;
+  color: white;
+  text-decoration: none;
+  padding: 15px 30px;
+  border-radius: 10px;
+  font-size: 18px;
   transition: 0.3s;
 }
-
-.tab-buttons button.active {
-  background: #238636;
-  color: white;
+.main-btn:hover {
+  background: #005ec2;
 }
 
-.tab-buttons button:hover {
-  background: #30363d;
-}
-
-.tab-section {
-  display: none;
+.chat-box {
   width: 90%;
   max-width: 600px;
-  background: #161b22;
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0 0 10px #30363d;
-}
-
-.tab-section.active {
-  display: block;
-}
-
-/* Chat Section */
-.chat-container {
   height: 400px;
+  background: white;
+  border-radius: 10px;
+  margin: 20px auto;
   overflow-y: auto;
-  border: 1px solid #30363d;
-  border-radius: 8px;
   padding: 10px;
-  background: #0d1117;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
 .message {
-  margin: 10px 0;
+  margin: 10px;
   padding: 10px;
-  border-radius: 10px;
-  line-height: 1.4;
-  max-width: 80%;
+  border-radius: 8px;
 }
-
-.user {
-  background: #238636;
-  color: white;
-  margin-left: auto;
+.message.user {
+  background: #dff9fb;
   text-align: right;
 }
-
-.ai {
-  background: #21262d;
-  color: #c9d1d9;
+.message.ai {
+  background: #f1f2f6;
   text-align: left;
 }
 
-.input-area {
+.input-box {
+  width: 90%;
+  max-width: 600px;
   display: flex;
-  margin-top: 15px;
+  gap: 10px;
+  margin: auto;
 }
 
-#userInput {
+input, textarea {
   flex: 1;
   padding: 10px;
-  border-radius: 8px 0 0 8px;
-  border: 1px solid #30363d;
-  background: #0d1117;
-  color: #e6edf3;
-}
-
-#sendBtn {
-  padding: 10px 20px;
-  background: #238636;
-  color: white;
-  border: none;
-  border-radius: 0 8px 8px 0;
-  cursor: pointer;
-}
-
-/* Video Generator */
-.video-gen-container {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-#videoPrompt {
-  padding: 10px;
+  border: 1px solid #ccc;
   border-radius: 8px;
-  border: 1px solid #30363d;
-  background: #0d1117;
-  color: #e6edf3;
+  font-size: 16px;
 }
 
-#generateVideoBtn {
-  padding: 10px;
-  background: #58a6ff;
-  color: white;
+button {
+  background: #0078ff;
   border: none;
+  color: white;
+  padding: 10px 15px;
   border-radius: 8px;
   cursor: pointer;
-  transition: 0.3s;
+}
+button:hover {
+  background: #005ec2;
 }
 
-#generateVideoBtn:hover {
-  background: #1f6feb;
+.video-box {
+  width: 90%;
+  max-width: 600px;
+  margin: 20px auto;
+  text-align: left;
 }
 
-.video-output video {
-  width: 100%;
-  border-radius: 10px;
-  margin-top: 10px;
-}
-
-.whatsapp-float {
+.whatsapp {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  width: 60px;
-  height: 60px;
-  z-index: 100;
-}
-
-.whatsapp-float img {
-  width: 100%;
-  border-radius: 50%;
-  box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
-  transition: 0.3s;
-}
-
-.whatsapp-float img:hover {
-  transform: scale(1.1);
+  background: #25d366;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: bold;
 }
 
 footer {
-  margin-top: 30px;
-  text-align: center;
-  color: #8b949e;
-  font-size: 0.9rem;
-  }
+  margin: 30px;
+  color: #555;
+}
