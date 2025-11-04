@@ -1,35 +1,31 @@
 // /api/video.js
+import fetch from "node-fetch";
+
 export default async function handler(req, res) {
-  if (req.method !== "POST") return res.status(405).send("Method not allowed");
-
-  const { prompt } = req.body;
-  const API_KEY = process.env.VEO_API_KEY;
-
   try {
-    const response = await fetch("https://api.veo3api.com/v1/videos", {
+    const { prompt } = req.body;
+
+    const response = await fetch("https://veo3api.com/api/video/generate", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${API_KEY}`,
         "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.VEO3_API_KEY}`,
       },
       body: JSON.stringify({
-        model: "veo-3.1",
-        prompt,
-        output_format: "mp4",
-        duration: 8
+        prompt: prompt,
+        resolution: "720p",
+        duration: 5,
       }),
     });
 
     const data = await response.json();
 
-    if (!response.ok) {
-      console.error("Veo3API Error:", data);
-      return res.status(500).json({ error: "Video generation failed." });
+    if (!response.ok || !data?.videoUrl) {
+      return res.status(400).json({ error: "Failed to generate video." });
     }
 
-    res.status(200).json({ videoUrl: data.video_url });
+    res.status(200).json({ videoUrl: data.videoUrl });
   } catch (error) {
-    console.error("Veo3API Error:", error);
-    res.status(500).json({ error: "Suleiman AI Video failed to generate." });
+    res.status(500).json({ error: "Server error generating video." });
   }
-                  }
+}
