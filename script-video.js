@@ -6,7 +6,7 @@ document.getElementById("generateVideoBtn").addEventListener("click", async () =
   videoOutput.innerHTML = "<p>Suleiman AI is generating your video...</p>";
 
   try {
-    const res = await fetch("/api/memories", {
+    const res = await fetch("/api/video", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ prompt }),
