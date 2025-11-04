@@ -1,56 +1,89 @@
-// === City Skyline (buildings glow) ===
-  const city = new THREE.Group();
-  for (let i = 0; i < 80; i++) {
-    const buildingHeight = Math.random() * 5 + 3;
-    const geometry = new THREE.BoxGeometry(1, buildingHeight, 1);
-    const material = new THREE.MeshStandardMaterial({
-      emissive: 0x00aaff,
-      emissiveIntensity: Math.random() * 0.5 + 0.3,
-      color: 0x111111,
-    });
-    const building = new THREE.Mesh(geometry, material);
-    building.position.set(
-      (Math.random() - 0.5) * 80,
-      buildingHeight / 2,
-      (Math.random() - 0.5) * 200
-    );
-    city.add(building);
-  }
-  scene.add(city);
+// Tab switching
+const chatTab = document.getElementById("chatTab");
+const videoTab = document.getElementById("videoTab");
+const chatSection = document.getElementById("chatSection");
+const videoSection = document.getElementById("videoSection");
 
-  // === Road Curving Motion ===
-  function animateCurve() {
-    roadOffset += 0.03;
-    const curveFactor = Math.sin(roadOffset * 0.3) * 0.5;
-    road.rotation.z = curveFactor * 0.05;
-  }
+chatTab.addEventListener("click", () => {
+  chatTab.classList.add("active");
+  videoTab.classList.remove("active");
+  chatSection.classList.add("active");
+  videoSection.classList.remove("active");
+});
 
-  // === Animate Function ===
-  function animate() {
-    requestAnimationFrame(animate);
+videoTab.addEventListener("click", () => {
+  videoTab.classList.add("active");
+  chatTab.classList.remove("active");
+  videoSection.classList.add("active");
+  chatSection.classList.remove("active");
+});
 
-    if (car) {
-      if (moveLeft) car.position.x -= 0.1;
-      if (moveRight) car.position.x += 0.1;
-      if (accelerating) speed += 0.005;
-      else speed *= 0.98;
+// Chat AI logic
+const chatContainer = document.getElementById("chatContainer");
+const userInput = document.getElementById("userInput");
+const sendBtn = document.getElementById("sendBtn");
 
-      car.position.z -= speed;
-      camera.position.z -= speed * 0.8;
-      camera.position.x = car.position.x * 0.5;
-      camera.lookAt(car.position.x, 0, car.position.z - 10);
-    }
+sendBtn.addEventListener("click", sendMessage);
+userInput.addEventListener("keypress", e => {
+  if (e.key === "Enter") sendMessage();
+});
 
-    // Twinkling stars
-    stars.children.forEach((s, i) => {
-      s.material.color.setHSL((Math.sin(Date.now() * 0.001 + i) + 1) / 2, 1, 0.8);
+async function sendMessage() {
+  const message = userInput.value.trim();
+  if (!message) return;
+
+  appendMessage(message, "user");
+  userInput.value = "";
+
+  appendMessage("Thinking...", "ai");
+
+  try {
+    const response = await fetch("/api/gemini", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message }),
     });
 
-    animateCurve();
-    renderer.render(scene, camera);
+    const data = await response.json();
+    const aiMessage = data.reply || "Sorry, I couldn’t process that.";
+    replaceLastMessage(aiMessage, "ai");
+  } catch (error) {
+    replaceLastMessage("Error connecting to AI.", "ai");
   }
+}
 
-  animate();
-  </script>
-</body>
-</html>
+function appendMessage(text, sender) {
+  const msg = document.createElement("div");
+  msg.classList.add("message", sender);
+  msg.textContent = text;
+  chatContainer.appendChild(msg);
+  chatContainer.scrollTop = chatContainer.scrollHeight;
+}
+
+function replaceLastMessage(text, sender) {
+  const messages = chatContainer.querySelectorAll(".message." + sender);
+  const last = messages[messages.length - 1];
+  if (last) last.textContent = text;
+  chatContainer.scrollTop = chatContainer.scrollHeight;
+}
+
+// Video generator (mocked for now)
+const generateVideoBtn = document.getElementById("generateVideoBtn");
+generateVideoBtn.addEventListener("click", async () => {
+  const prompt = document.getElementById("videoPrompt").value.trim();
+  const videoOutput = document.getElementById("videoOutput");
+  if (!prompt) return alert("Please describe the video.");
+
+  videoOutput.innerHTML = "<p>Generating video...</p>";
+
+  // Placeholder for real API
+  setTimeout(() => {
+    videoOutput.innerHTML = `
+      <video controls autoplay>
+        <source src="https://samplelib.com/lib/preview/mp4/sample-5s.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+      <p>Video generated for: "${prompt}"</p>
+    `;
+  }, 3000);
+});
